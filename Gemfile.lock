@@ -1,0 +1,63 @@
+GEM
+  remote: https://rubygems.org/
+  specs:
+    activemodel (4.2.11.3)
+      activesupport (= 4.2.11.3)
+      builder (~> 3.1)
+    activesupport (4.2.11.3)
+      i18n (~> 0.7)
+      minitest (~> 5.1)
+      thread_safe (~> 0.3, >= 0.3.4)
+      tzinfo (~> 1.1)
+    bson (3.2.7)
+    builder (3.2.4)
+    concurrent-ruby (1.1.8)
+    connection_pool (2.2.5)
+    i18n (0.9.5)
+      concurrent-ruby (~> 1.0)
+    minitest (5.14.4)
+    mongoid (4.0.2)
+      activemodel (~> 4.0)
+      moped (~> 2.0.0)
+      origin (~> 2.1)
+      tzinfo (>= 0.3.37)
+    moped (2.0.7)
+      bson (~> 3.0)
+      connection_pool (~> 2.0)
+      optionable (~> 0.2.0)
+    multi_json (1.15.0)
+    mustermann (1.1.1)
+      ruby2_keywords (~> 0.0.1)
+    optionable (0.2.0)
+    origin (2.3.1)
+    rack (2.2.3)
+    rack-protection (2.1.0)
+      rack
+    ruby2_keywords (0.0.4)
+    sinatra (2.1.0)
+      mustermann (~> 1.0)
+      rack (~> 2.2)
+      rack-protection (= 2.1.0)
+      tilt (~> 2.0)
+    sinatra-contrib (2.1.0)
+      multi_json
+      mustermann (~> 1.0)
+      rack-protection (= 2.1.0)
+      sinatra (= 2.1.0)
+      tilt (~> 2.0)
+    thread_safe (0.3.6)
+    tilt (2.0.10)
+    tzinfo (1.2.9)
+      thread_safe (~> 0.1)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  mongoid (~> 4.0.0)
+  rack
+  sinatra
+  sinatra-contrib
+
+BUNDLED WITH
+   2.0.2

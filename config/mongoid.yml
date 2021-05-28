@@ -1,0 +1,6 @@
+development:
+  sessions:
+    default:
+      uri: mongodb+srv://natan:saradao89@sinatra.139vl.mongodb.net/projTcc?retryWrites=true&w=majority
+      options:
+        server_selection_timeout: 5
