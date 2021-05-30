@@ -2,14 +2,22 @@ require "sinatra/namespace"
 require "sinatra/json"
 require "json"
 require "./models"
+require "./serializers/teacher_serializer"
 
 get "/" do 
   "Projeto teste usando Sinatra!"
 end
 
 namespace "/api/v1" do 
+
   before do
     content_type 'application/json'
+  end
+
+  helpers do
+    def serializer_teacher(teacher, options={}) 
+      TeacherSerializer.new(teacher).to_json
+    end
   end
   
   namespace "/teachers" do 
@@ -17,7 +25,7 @@ namespace "/api/v1" do
     # GET /teachers/:id
     get "/:id" do
       teacher = Teacher.find(params[:id])
-      halt(200,teacher.to_json(except: "_id"))
+      serializer_teacher(teacher)
     rescue Mongoid::Errors::DocumentNotFound
       halt(404)
     end
@@ -25,7 +33,9 @@ namespace "/api/v1" do
     # GET /teachers 
     get "/" do 
       teachers = Teacher.all 
-      halt(200,teachers.to_json)
+      teachers.map do |t|
+        TeacherSerializer.new(t)
+      end.to_json
     end
 
     # PATCH /teachers/id
@@ -36,7 +46,7 @@ namespace "/api/v1" do
         teacher.set("#{key}" => value)
       end
 
-      halt(200,teacher.to_json)
+      serializer_teacher(teacher)
     rescue Mongoid::Errors::DocumentNotFound,JSON::ParserError, Mongoid::Errors::InvalidFind
       halt(404)
     end
@@ -57,7 +67,7 @@ namespace "/api/v1" do
       if Teacher.where(name: params["name"]).one.nil?
         teacher = Teacher.new(name: params["name"])
         teacher.save! if teacher.new_record?
-        halt(201, teacher.to_json)
+        halt(201, serializer_teacher(teacher))
       end  
       halt(400, "Professor já existe".to_json)
     rescue Exception => e 
