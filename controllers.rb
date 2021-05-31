@@ -1,8 +1,8 @@
 require "sinatra/namespace"
-require "sinatra/json"
 require "json"
 require "./models"
 require "./serializers/teacher_serializer"
+require "./repositories/teacher_repository"
 
 get "/" do 
   "Projeto teste usando Sinatra!"
@@ -14,9 +14,17 @@ namespace "/api/v1" do
     content_type 'application/json'
   end
 
+  before do 
+    @repository = TeacherRepository.new(Teacher)
+  end
+
   helpers do
     def serializer_teacher(teacher, options={}) 
       TeacherSerializer.new(teacher).to_json
+    end
+
+    def json_body(request)
+      JSON.parse(request.body.read) 
     end
   end
   
@@ -24,7 +32,7 @@ namespace "/api/v1" do
     
     # GET /teachers/:id
     get "/:id" do
-      teacher = Teacher.find(params[:id])
+      teacher = @repository.find_by_id(params[:id])
       serializer_teacher(teacher)
     rescue Mongoid::Errors::DocumentNotFound
       halt(404)
@@ -32,7 +40,7 @@ namespace "/api/v1" do
 
     # GET /teachers 
     get "/" do 
-      teachers = Teacher.all 
+      teachers = @repository.all 
       teachers.map do |t|
         TeacherSerializer.new(t)
       end.to_json
@@ -40,12 +48,8 @@ namespace "/api/v1" do
 
     # PATCH /teachers/id
     patch "/:id" do 
-      new_attributes = JSON.parse(request.body.read)
-      teacher = Teacher.find(params[:id])
-      new_attributes.each do |key,value| 
-        teacher.set("#{key}" => value)
-      end
-
+      new_attributes = json_body(request)    
+      teacher = @repository.update_teacher(params[:id],new_attributes)
       serializer_teacher(teacher)
     rescue Mongoid::Errors::DocumentNotFound,JSON::ParserError, Mongoid::Errors::InvalidFind
       halt(404)
@@ -54,7 +58,7 @@ namespace "/api/v1" do
 
     # DELETE /teachers/id
     delete "/:id" do 
-      Teacher.find(params[:id]).delete
+      @repository.delete_teacher(params[:id])
       halt(204)
     rescue Mongoid::Errors::DocumentNotFound
       halt(404)
@@ -62,16 +66,11 @@ namespace "/api/v1" do
 
     # POST /teacher
     post "/" do
-      params = JSON.parse(request.body.read)
-
-      if Teacher.where(name: params["name"]).one.nil?
-        teacher = Teacher.new(name: params["name"])
-        teacher.save! if teacher.new_record?
-        halt(201, serializer_teacher(teacher))
-      end  
-      halt(400, "Professor já existe".to_json)
+      params = json_body(request) 
+      teacher = @repository.create_teacher(params)
+      halt(201, serializer_teacher(teacher))
     rescue Exception => e 
-      halt(400, "Erro ao cadastrar professor!".to_json)
+       halt(400, "Erro ao cadastrar professor!".to_json)
     end
   end
 

@@ -1,5 +1,6 @@
 class Theme
   include Mongoid::Document
+  include Mongoid::Timestamps
 
   field :title, type: String
   field :description, type: String 
@@ -13,6 +14,7 @@ end
 
 class Teacher 
   include Mongoid::Document
+  include Mongoid::Timestamps
 
   field :name, type: String 
   field :latex_url, type: String
