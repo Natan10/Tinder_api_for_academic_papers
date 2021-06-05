@@ -6,7 +6,7 @@ require "./controllers"
 Bundler.require(:default)
 
 configure do
-  Mongoid.load!("./config/mongoid.yml")
+  Mongoid.load!("./config/mongoid.yml","development")
 end
 
 

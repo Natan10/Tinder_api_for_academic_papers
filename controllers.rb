@@ -5,8 +5,9 @@ require "./serializers/teacher_serializer"
 require "./repositories/teacher_repository"
 
 get "/" do 
-  "Projeto teste usando Sinatra!"
+  halt(200,{message: "Projeto teste usando Sinatra!"}.to_json)
 end
+
 
 namespace "/api/v1" do 
 
@@ -51,17 +52,18 @@ namespace "/api/v1" do
       new_attributes = json_body(request)    
       teacher = @repository.update_teacher(params[:id],new_attributes)
       serializer_teacher(teacher)
-    rescue Mongoid::Errors::DocumentNotFound,JSON::ParserError, Mongoid::Errors::InvalidFind
-      halt(404)
+    rescue Mongoid::Errors::DocumentNotFound, Mongoid::Errors::InvalidFind => e
+      halt(404, {message: "Professor não encontrado!"}.to_json)
+    rescue JSON::ParserError => e 
+      halt(400, {message: "Parâmetros inválidos"}.to_json)
     end
-
 
     # DELETE /teachers/id
     delete "/:id" do 
       @repository.delete_teacher(params[:id])
       halt(204)
     rescue Mongoid::Errors::DocumentNotFound
-      halt(404)
+      halt(404, {message: "Professor não encontrado!"}.to_json)
     end
 
     # POST /teacher

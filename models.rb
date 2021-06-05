@@ -17,9 +17,12 @@ class Teacher
   include Mongoid::Timestamps
 
   field :name, type: String 
+  field :email, type: String
   field :latex_url, type: String
 
   validates :name, presence: true
+  validates :email, presence: true
+  validates :email, format: { with: /^[a-z0-9.]+@[a-z0-9]+\.[a-z]+(\.[a-z]+)?$/, multiline: true }
 
   has_many :themes
 end
