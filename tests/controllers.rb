@@ -20,11 +20,19 @@ describe "TeacherControllerTest" do
   end
 
   describe "/teachers" do
-    it "return teachers" do 
+    it "return teachers" do  
       get "/api/v1/teachers/" 
       response = json_parse(last_response.body)
       assert_equal(last_response.status,200)
-      assert_equal(response.size,1)
+    end
+
+    it "return one teacher" do 
+      teacher = create(:teacher)
+       
+      get "/api/v1/teachers/#{teacher.id.to_s}" 
+      response = json_parse(last_response.body)
+      assert_equal(last_response.status,200)  
+      assert_equal(response["id"],teacher.id.to_s)
     end
   end
   

@@ -5,8 +5,13 @@ describe "TeacherModelTest" do
 
   it { _(subject).must be_document }
   it { _(subject).must have_field(:name).of_type(String) }
+  it { _(subject).must have_field(:email).of_type(String) }
   it { _(subject).must have_field(:latex_url).of_type(String)}
   it { _(subject).must have_many(:themes) }
+  it {_(subject).must validate_presence_of(:name)}
+  it {_(subject).must validate_presence_of(:email)}
+  it {_(subject).must validate_format_of(:email).to_allow("test@email.com")}
+  it {_(subject).must validate_format_of(:email).to_not_allow("test.com")}
 end
 
 describe "ThemeModelTest" do 
