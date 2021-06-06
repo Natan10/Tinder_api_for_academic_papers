@@ -1,23 +1,25 @@
 require "sinatra"
 require "mongoid"
-require "sinatra/json"
+require "rack/contrib"
+require "sinatra/cross_origin"
 require "bundler"
 require "./controllers"
 Bundler.require(:default)
 
+use Rack::JSONBodyParser
+
 configure do
-  Mongoid.load!("./config/mongoid.yml","development")
+  Mongoid.load!("./config/db/mongoid.yml","development")
 end
 
-
-before do
-  headers['Access-Control-Allow-Methods'] = 'GET, POST, PUT, DELETE, OPTIONS'
-  headers['Access-Control-Allow-Origin'] = '*'
-  headers['Access-Control-Allow-Headers'] = 'accept, authorization, origin'
+configure do
+  set :json_encoder, :to_json
+  set :allow_origin, :any
+  set :allow_methods, [:get, :post, :options, :delete, :put, :patch]
+  enable :cross_origin
 end
 
-options '*' do
-  response.headers['Allow'] = 'HEAD,GET,PUT,DELETE,OPTIONS,POST'
-  response.headers['Access-Control-Allow-Headers'] = 'X-Requested-With, X-HTTP-Method-Override, Content-Type, Cache-Control, Accept'
+options "*" do
+  response.headers["Allow"] = "HEAD,GET,PUT,PATCH,POST,OPTIONS,DELETE"
+  response.headers["Access-Control-Allow-Headers"] = "X-Requested-With, X-HTTP-Method-Override, Content-Type, Cache-Control, Accept"
 end
-
