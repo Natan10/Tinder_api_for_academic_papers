@@ -12,6 +12,10 @@ describe "TeacherControllerTest" do
     JSON.parse(msg)
   end
 
+  before :each do 
+    Teacher.collection.drop
+  end
+
   it "/" do 
     get "/"
     message = json_parse(last_response.body)["message"]
@@ -34,7 +38,92 @@ describe "TeacherControllerTest" do
       assert_equal(last_response.status,200)  
       assert_equal(response["id"],teacher.id.to_s)
     end
+
+    describe "Post /create" do 
+      
+      it "Return 201" do 
+        teacher = attributes_for(:teacher)
+
+        post "/api/v1/teachers/", teacher 
+        response = json_parse(last_response.body) 
+        assert_equal(last_response.status,201)
+        assert_equal(response["nome"],teacher[:name])
+      end
+
+      describe "invalid params" do
+        it "empty params" do 
+          post "/api/v1/teachers/", {}
+          assert_equal(last_response.status,400)
+        end
+
+        it "without one param" do 
+          teacher = {email: "teste@test.com"}
+          post "/api/v1/teachers/", teacher
+          
+          response = json_parse(last_response.body) 
+          assert_equal(last_response.status,400)
+          assert_equal(response,"Erro ao cadastrar professor!")
+        end
+      end
+    end
+
+    describe "Delete /:id" do 
+      it "valid id" do 
+        teacher = create(:teacher) 
+        delete "/api/v1/teachers/#{teacher.id}"
+        assert_equal(last_response.status,204)
+      end
+
+      it "invalid id" do 
+        delete "/api/v1/teachers/10000"
+        response = json_parse(last_response.body)
+        assert_equal(last_response.status,404)
+        assert_equal(response["message"],"Professor não encontrado!")
+      end
+    end
+
+    describe "Patch /:id" do
+     
+      before do 
+        @teacher = create(:teacher)
+      end
+
+      it "valid params" do 
+        id = @teacher.id 
+        new_attributes = {
+          "name": "Teste1",
+          "email": "teste@email.com"
+        }
+        
+        patch "/api/v1/teachers/#{id}", new_attributes
+        
+        response = json_parse(last_response.body)
+        assert_equal(last_response.status,200)   
+        assert_equal(response["nome"],new_attributes[:name])
+      end
+
+      it "invalid id" do 
+        new_attributes = {
+          "name": "Teste1",
+          "email": "teste@email.com"
+        }
+        patch "/api/v1/teachers/1000", new_attributes
+        assert_equal(last_response.status,404)  
+      end
+
+      it "invalid params" do  
+        patch "/api/v1/teachers/#{@teacher.id}", {"teste": "teste.com"}
+        assert_equal(last_response.status,500) 
+      end
+
+      it "empty params" do  
+        patch "/api/v1/teachers/#{@teacher.id}", {}
+        response = json_parse(last_response.body)
+        assert_equal(last_response.status,400)
+        assert_equal(response["message"],"Parâmetros inválidos")
+      end
+
+    end
+    
   end
-  
-  
 end

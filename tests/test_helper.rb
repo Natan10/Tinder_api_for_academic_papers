@@ -11,7 +11,7 @@ require './server'
 require_relative 'factories'
 
 configure do
-  Mongoid.load!("./config/mongoid.yml","test")
+  Mongoid.load!("./config/db/mongoid.yml","test")
 end
 
 class MiniTest::Spec
