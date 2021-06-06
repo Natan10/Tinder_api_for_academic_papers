@@ -3,6 +3,7 @@ require "mongoid"
 require "rack/contrib"
 require "sinatra/cross_origin"
 require "bundler"
+require "dotenv/load"
 
 # Controllers
 require "./controllers/teachers_controller"
@@ -11,8 +12,8 @@ Bundler.require(:default)
 
 use Rack::JSONBodyParser
 
-configure do
-  Mongoid.load!("./config/db/mongoid.yml","development")
+configure :development,:production do
+  Mongoid.load!("./config/db/mongoid-development.yml")
 end
 
 configure do
@@ -26,4 +27,3 @@ options "*" do
   response.headers["Allow"] = "HEAD,GET,PUT,PATCH,POST,OPTIONS,DELETE"
   response.headers["Access-Control-Allow-Headers"] = "X-Requested-With, X-HTTP-Method-Override, Content-Type, Cache-Control, Accept"
 end
-

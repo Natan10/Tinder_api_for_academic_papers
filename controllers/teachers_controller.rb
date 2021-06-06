@@ -8,7 +8,7 @@ namespace "/api/v1" do
   before do
     content_type :json
   end
-  
+
   before do 
     @repository = TeacherRepository.new(Teacher)
   end
@@ -35,7 +35,7 @@ namespace "/api/v1" do
     end
 
     # GET /teachers 
-    get "/" do 
+    get "/" do
       teachers = @repository.all 
       teachers.map do |t|
         TeacherSerializer.new(t)

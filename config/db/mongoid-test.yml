@@ -1,0 +1,5 @@
+test:
+  clients:
+    default: 
+      uri: <%= ENV["MONGO_URI_TEST"] %>
+      

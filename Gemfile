@@ -8,6 +8,7 @@ gem "rack"
 gem "rake"
 gem "rack-contrib"
 
+gem 'dotenv-rails', groups: [:development, :test]
 
 group :development do
   gem "pry"
