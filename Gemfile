@@ -2,9 +2,11 @@ source "https://rubygems.org"
 
 gem "sinatra"
 gem "sinatra-contrib"
+gem "sinatra-cross_origin", "~> 0.3.1"
 gem "mongoid", "~> 7.0"
 gem "rack"
 gem "rake"
+gem "rack-contrib"
 
 
 group :development do
