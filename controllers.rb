@@ -4,17 +4,16 @@ require "./models"
 require "./serializers/teacher_serializer"
 require "./repositories/teacher_repository"
 
+
+before do
+  content_type :json
+end
+
 get "/" do 
   halt(200,{message: "Projeto teste usando Sinatra!"}.to_json)
 end
 
-
 namespace "/api/v1" do 
-
-  before do
-    content_type 'application/json'
-  end
-
   before do 
     @repository = TeacherRepository.new(Teacher)
   end
@@ -24,6 +23,7 @@ namespace "/api/v1" do
       TeacherSerializer.new(teacher).to_json
     end
 
+    # Deprecado
     def json_body(request)
       JSON.parse(request.body.read) 
     end
@@ -49,13 +49,19 @@ namespace "/api/v1" do
 
     # PATCH /teachers/id
     patch "/:id" do 
-      new_attributes = json_body(request)    
+
+      new_attributes = params.except("id")
+
+      if new_attributes.empty?
+        halt(400, {message: "Parâmetros inválidos"}.to_json)
+      end
       teacher = @repository.update_teacher(params[:id],new_attributes)
       serializer_teacher(teacher)
+      
     rescue Mongoid::Errors::DocumentNotFound, Mongoid::Errors::InvalidFind => e
       halt(404, {message: "Professor não encontrado!"}.to_json)
-    rescue JSON::ParserError => e 
-      halt(400, {message: "Parâmetros inválidos"}.to_json)
+    rescue Mongoid::Errors::UnknownAttribute => e
+      halt(500, {message: "Parâmetros inválidos"}.to_json)
     end
 
     # DELETE /teachers/id
@@ -66,9 +72,8 @@ namespace "/api/v1" do
       halt(404, {message: "Professor não encontrado!"}.to_json)
     end
 
-    # POST /teacher
+    # POST /teachers/
     post "/" do
-      params = json_body(request) 
       teacher = @repository.create_teacher(params)
       halt(201, serializer_teacher(teacher))
     rescue Exception => e 
