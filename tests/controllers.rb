@@ -18,13 +18,6 @@ describe "TeacherControllerTest" do
     Teacher.collection.drop
   end
 
-  it "/" do 
-    get "/"
-    message = json_parse(last_response.body)["message"]
-    assert_equal(last_response.status,200)
-    assert_equal(message,"Projeto teste usando Sinatra!")
-  end
-
   describe "/teachers" do
     it "return teachers" do  
       get "#{API_URI}" 

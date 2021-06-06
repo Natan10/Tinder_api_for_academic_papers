@@ -7,6 +7,7 @@ class TeacherSerializer
     data = {
       id: @teacher["_id"].to_s,
       nome: @teacher["name"],
+      email: @teacher["email"],
       latex_url: @teacher["latex_url"]
     }
     data

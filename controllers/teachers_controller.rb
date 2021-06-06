@@ -1,19 +1,14 @@
 require "sinatra/namespace"
-require "json"
 require "./models"
 require "./serializers/teacher_serializer"
 require "./repositories/teacher_repository"
 
 
-before do
-  content_type :json
-end
-
-get "/" do 
-  halt(200,{message: "Projeto teste usando Sinatra!"}.to_json)
-end
-
 namespace "/api/v1" do 
+  before do
+    content_type :json
+  end
+  
   before do 
     @repository = TeacherRepository.new(Teacher)
   end
@@ -80,5 +75,4 @@ namespace "/api/v1" do
        halt(400, "Erro ao cadastrar professor!".to_json)
     end
   end
-
 end
