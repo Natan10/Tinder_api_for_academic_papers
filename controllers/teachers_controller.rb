@@ -2,6 +2,8 @@ require "sinatra/namespace"
 require "./models"
 require "./serializers/teacher_serializer"
 require "./repositories/teacher_repository"
+require "./repositories/theme_repository"
+
 
 
 namespace "/api/v1" do 
@@ -10,7 +12,8 @@ namespace "/api/v1" do
   end
 
   before do 
-    @repository = TeacherRepository.new(Teacher)
+    @repository_theacher = TeacherRepository.new(Teacher)
+    @repository_theme = ThemeRepository.new(Theme,@repository_theacher)
   end
 
   helpers do
@@ -28,7 +31,7 @@ namespace "/api/v1" do
     
     # GET /teachers/:id
     get "/:id" do
-      teacher = @repository.find_by_id(params[:id])
+      teacher = @repository_theacher.find_by_id(params[:id])
       serializer_teacher(teacher)
     rescue Mongoid::Errors::DocumentNotFound
       halt(404)
@@ -36,7 +39,7 @@ namespace "/api/v1" do
 
     # GET /teachers 
     get "/" do
-      teachers = @repository.all 
+      teachers = @repository_theacher.all 
       teachers.map do |t|
         TeacherSerializer.new(t)
       end.to_json
@@ -50,7 +53,7 @@ namespace "/api/v1" do
       if new_attributes.empty?
         halt(400, {message: "Parâmetros inválidos"}.to_json)
       end
-      teacher = @repository.update_teacher(params[:id],new_attributes)
+      teacher = @repository_theacher.update_teacher(params[:id],new_attributes)
       serializer_teacher(teacher)
       
     rescue Mongoid::Errors::DocumentNotFound, Mongoid::Errors::InvalidFind => e
@@ -61,7 +64,7 @@ namespace "/api/v1" do
 
     # DELETE /teachers/id
     delete "/:id" do 
-      @repository.delete_teacher(params[:id])
+      @repository_theacher.delete_teacher(params[:id])
       halt(204)
     rescue Mongoid::Errors::DocumentNotFound
       halt(404, {message: "Professor não encontrado!"}.to_json)
@@ -69,10 +72,32 @@ namespace "/api/v1" do
 
     # POST /teachers/
     post "/" do
-      teacher = @repository.create_teacher(params)
+      teacher = @repository_theacher.create_teacher(params)
       halt(201, serializer_teacher(teacher))
     rescue Exception => e 
-       halt(400, "Erro ao cadastrar professor!".to_json)
+      halt(400, "Erro ao cadastrar professor!".to_json)
+    end
+  end
+
+  namespace "/themes" do 
+    get "/" do 
+      @repository_theme.all.to_json
+    end
+
+    get "/:id" do
+      theme = @repository_theme.find_by_id(params[:id])
+      theme.to_json
+    rescue Mongoid::Errors::DocumentNotFound
+      halt(404)
+    end
+
+    post "/" do 
+      theme = @repository_theme.create(params[:teacher_id],params.except("id")["theme"])
+      halt(201,theme.to_json)
+    rescue Mongoid::Errors::DocumentNotFound 
+      halt(404, "Professor não encontrado!".to_json)
+    rescue  Mongoid::Errors::Validations
+      halt(400, "Erro ao cadastrar tema!".to_json)
     end
   end
 end
