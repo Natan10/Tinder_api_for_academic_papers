@@ -8,6 +8,7 @@ class Theme
   field :tags, type: Array
 
   validates :title, presence: true
+  validates :description, presence: true
 
   belongs_to :teacher
 end
@@ -24,5 +25,5 @@ class Teacher
   validates :email, presence: true
   validates :email, format: { with: /^[a-z0-9.]+@[a-z0-9]+\.[a-z]+(\.[a-z]+)?$/, multiline: true }
 
-  has_many :themes
+  has_many :themes,  autosave: true
 end
