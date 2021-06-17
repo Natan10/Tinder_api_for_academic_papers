@@ -8,5 +8,13 @@ FactoryBot.define do
     end
     latex_url { Faker::Internet.url }
   end
+
+  factory :theme do 
+   title { Faker::Lorem.word }
+   description {Faker::Lorem.paragraph}
+   tags {["A","B","C"].sample(rand(1..3))}
+   teacher 
+  end
 end
+
 
