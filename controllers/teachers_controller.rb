@@ -1,6 +1,7 @@
 require "sinatra/namespace"
 require "./models"
 require "./serializers/teacher_serializer"
+require "./serializers/theme_serializer"
 require "./repositories/teacher_repository"
 require "./repositories/theme_repository"
 
@@ -19,6 +20,10 @@ namespace "/api/v1" do
   helpers do
     def serializer_teacher(teacher, options={}) 
       TeacherSerializer.new(teacher).to_json
+    end
+
+    def serializer_theme(theme,options={})
+      ThemeSerializer.new(theme).to_json
     end
 
     # Deprecado
@@ -81,23 +86,30 @@ namespace "/api/v1" do
 
   namespace "/themes" do 
     get "/" do 
-      @repository_theme.all.to_json
+      themes = @repository_theme.all
+      themes.map do |theme|
+        ThemeSerializer.new(theme)
+      end.to_json
     end
 
     get "/:id" do
       theme = @repository_theme.find_by_id(params[:id])
-      theme.to_json
+      serializer_theme(theme)
     rescue Mongoid::Errors::DocumentNotFound
       halt(404)
     end
 
     post "/" do 
       theme = @repository_theme.create(params[:teacher_id],params.except("id")["theme"])
-      halt(201,theme.to_json)
+      halt(201,serializer_theme(theme))
     rescue Mongoid::Errors::DocumentNotFound 
       halt(404, "Professor não encontrado!".to_json)
     rescue  Mongoid::Errors::Validations
       halt(400, "Erro ao cadastrar tema!".to_json)
+    end
+
+    delete "/:id" do 
+      
     end
   end
 end
