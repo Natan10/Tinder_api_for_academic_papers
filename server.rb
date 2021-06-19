@@ -6,7 +6,7 @@ require "bundler"
 require "dotenv/load"
 
 # Controllers
-require "./controllers/teachers_controller"
+require_relative "./controller"
 
 Bundler.require(:default)
 
