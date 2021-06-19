@@ -20,107 +20,107 @@ describe "ControllerTest" do
     Theme.collection.drop
   end
 
-  # describe "/teachers" do
-  #   it "return teachers" do  
-  #     get "#{API_URI_Teacher}" 
-  #     response = json_parse(last_response.body)
-  #     assert_equal(last_response.status,200)
-  #   end
+  describe "/teachers" do
+    it "return teachers" do  
+      get "#{API_URI_Teacher}" 
+      response = json_parse(last_response.body)
+      assert_equal(last_response.status,200)
+    end
 
-  #   it "return one teacher" do 
-  #     teacher = create(:teacher)
+    it "return one teacher" do 
+      teacher = create(:teacher)
        
-  #     get "#{API_URI_Teacher}#{teacher.id.to_s}" 
-  #     response = json_parse(last_response.body)
-  #     assert_equal(last_response.status,200)  
-  #     assert_equal(response["id"],teacher.id.to_s)
-  #   end
+      get "#{API_URI_Teacher}#{teacher.id.to_s}" 
+      response = json_parse(last_response.body)
+      assert_equal(last_response.status,200)  
+      assert_equal(response["id"],teacher.id.to_s)
+    end
 
-  #   describe "Post /create" do 
+    describe "Post /create" do 
       
-  #     it "Return 201" do 
-  #       teacher = attributes_for(:teacher)
+      it "Return 201" do 
+        teacher = attributes_for(:teacher)
 
-  #       post "#{API_URI_Teacher}", teacher 
-  #       response = json_parse(last_response.body) 
-  #       assert_equal(last_response.status,201)
-  #       assert_equal(response["nome"],teacher[:name])
-  #     end
+        post "#{API_URI_Teacher}", teacher 
+        response = json_parse(last_response.body) 
+        assert_equal(last_response.status,201)
+        assert_equal(response["nome"],teacher[:name])
+      end
 
-  #     describe "invalid params" do
-  #       it "empty params" do 
-  #         post "#{API_URI_Teacher}", {}
-  #         assert_equal(last_response.status,400)
-  #       end
+      describe "invalid params" do
+        it "empty params" do 
+          post "#{API_URI_Teacher}", {}
+          assert_equal(last_response.status,400)
+        end
 
-  #       it "without one param" do 
-  #         teacher = {email: "teste@test.com"}
-  #         post "#{API_URI_Teacher}", teacher
+        it "without one param" do 
+          teacher = {email: "teste@test.com"}
+          post "#{API_URI_Teacher}", teacher
           
-  #         response = json_parse(last_response.body) 
-  #         assert_equal(last_response.status,400)
-  #         assert_equal(response,"Erro ao cadastrar professor!")
-  #       end
-  #     end
-  #   end
+          response = json_parse(last_response.body) 
+          assert_equal(last_response.status,400)
+          assert_equal(response,"Erro ao cadastrar professor!")
+        end
+      end
+    end
 
-  #   describe "Delete /:id" do 
-  #     it "valid id" do 
-  #       teacher = create(:teacher) 
-  #       delete "#{API_URI_Teacher}#{teacher.id}"
-  #       assert_equal(last_response.status,204)
-  #     end
+    describe "Delete /:id" do 
+      it "valid id" do 
+        teacher = create(:teacher) 
+        delete "#{API_URI_Teacher}#{teacher.id}"
+        assert_equal(last_response.status,204)
+      end
 
-  #     it "invalid id" do 
-  #       delete "#{API_URI_Teacher}10000"
-  #       response = json_parse(last_response.body)
-  #       assert_equal(last_response.status,404)
-  #       assert_equal(response["message"],"Professor não encontrado!")
-  #     end
-  #   end
+      it "invalid id" do 
+        delete "#{API_URI_Teacher}10000"
+        response = json_parse(last_response.body)
+        assert_equal(last_response.status,404)
+        assert_equal(response["message"],"Professor não encontrado!")
+      end
+    end
 
-  #   describe "Patch /:id" do
+    describe "Patch /:id" do
      
-  #     before do 
-  #       @teacher = create(:teacher)
-  #     end
+      before do 
+        @teacher = create(:teacher)
+      end
 
-  #     it "valid params" do 
-  #       id = @teacher.id 
-  #       new_attributes = {
-  #         "name": "Teste1",
-  #         "email": "teste@email.com"
-  #       }
+      it "valid params" do 
+        id = @teacher.id 
+        new_attributes = {
+          "name": "Teste1",
+          "email": "teste@email.com"
+        }
         
-  #       patch "#{API_URI_Teacher}#{id}", new_attributes
+        patch "#{API_URI_Teacher}#{id}", new_attributes
         
-  #       response = json_parse(last_response.body)
-  #       assert_equal(last_response.status,200)   
-  #       assert_equal(response["nome"],new_attributes[:name])
-  #     end
+        response = json_parse(last_response.body)
+        assert_equal(last_response.status,200)   
+        assert_equal(response["nome"],new_attributes[:name])
+      end
 
-  #     it "invalid id" do 
-  #       new_attributes = {
-  #         "name": "Teste1",
-  #         "email": "teste@email.com"
-  #       }
-  #       patch "#{API_URI_Teacher}1000", new_attributes
-  #       assert_equal(last_response.status,404)  
-  #     end
+      it "invalid id" do 
+        new_attributes = {
+          "name": "Teste1",
+          "email": "teste@email.com"
+        }
+        patch "#{API_URI_Teacher}1000", new_attributes
+        assert_equal(last_response.status,404)  
+      end
 
-  #     it "invalid params" do  
-  #       patch "#{API_URI_Teacher}#{@teacher.id}", {"teste": "teste.com"}
-  #       assert_equal(last_response.status,500) 
-  #     end
+      it "invalid params" do  
+        patch "#{API_URI_Teacher}#{@teacher.id}", {"teste": "teste.com"}
+        assert_equal(last_response.status,500) 
+      end
 
-  #     it "empty params" do  
-  #       patch "#{API_URI_Teacher}#{@teacher.id}", {}
-  #       response = json_parse(last_response.body)
-  #       assert_equal(last_response.status,400)
-  #       assert_equal(response["message"],"Parâmetros inválidos")
-  #     end
-  #   end   
-  # end
+      it "empty params" do  
+        patch "#{API_URI_Teacher}#{@teacher.id}", {}
+        response = json_parse(last_response.body)
+        assert_equal(last_response.status,400)
+        assert_equal(response["message"],"Parâmetros inválidos")
+      end
+    end   
+  end
 
   describe "/themes" do
     it "return themes" do 
@@ -149,7 +149,7 @@ describe "ControllerTest" do
     end
 
 
-    describe "Post /create" do
+    describe "Post /" do
       let(:teacher) {create(:teacher)}
 
       it "return 201" do 
@@ -201,6 +201,59 @@ describe "ControllerTest" do
         assert_equal(last_response.status,400)
       end
     end
+
+    describe "Delete /:id" do
+      it "Return 204" do 
+        theme = create(:theme)
+
+        delete "#{API_URI_Themes}/#{theme.id}"
+        assert_equal(last_response.status,204)
+      end
+
+      it "invalid theme" do 
+        delete "#{API_URI_Themes}/1000"
+        response = json_parse(last_response.body) 
+        assert_equal(last_response.status,404)
+        assert_equal(response["message"], "Tema não encontrado!")
+      end
+    end
+
+
+    describe "Path /:id" do 
+
+      let(:theme) { create(:theme) }
+
+      it "valid params" do 
+        id = theme.id 
+        
+        new_params = {
+          title: "new title"
+        }
+      
+        patch "#{API_URI_Themes}/#{id.to_s}", new_params
+        response = json_parse(last_response.body) 
+        
+        assert_equal(last_response.status,200)
+        assert_equal(response["title"],new_params[:title])
+
+      end
+
+      it "empty params" do 
+        id = theme.id 
+        patch "#{API_URI_Themes}/#{id}", {}
+        assert_equal(last_response.status, 400)
+      end
+
+      it "invalid params" do 
+        id = theme.id 
+        new_params = {
+          tempo: "new title"
+        }
+        patch "#{API_URI_Themes}/#{id}", new_params
+        assert_equal(last_response.status, 500)
+      end
+    end
+    
   end
   
 end
