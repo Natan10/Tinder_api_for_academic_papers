@@ -58,7 +58,7 @@ namespace "/api/v1" do
       if new_attributes.empty?
         halt(400, {message: "Parâmetros inválidos"}.to_json)
       end
-      teacher = @repository_theacher.update_teacher(params[:id],new_attributes)
+      teacher = @repository_theacher.update(params[:id],new_attributes)
       serializer_teacher(teacher)
       
     rescue Mongoid::Errors::DocumentNotFound, Mongoid::Errors::InvalidFind => e
@@ -69,7 +69,7 @@ namespace "/api/v1" do
 
     # DELETE /teachers/id
     delete "/:id" do 
-      @repository_theacher.delete_teacher(params[:id])
+      @repository_theacher.delete(params[:id])
       halt(204)
     rescue Mongoid::Errors::DocumentNotFound
       halt(404, {message: "Professor não encontrado!"}.to_json)
@@ -77,7 +77,7 @@ namespace "/api/v1" do
 
     # POST /teachers/
     post "/" do
-      teacher = @repository_theacher.create_teacher(params)
+      teacher = @repository_theacher.create(params)
       halt(201, serializer_teacher(teacher))
     rescue Exception => e 
       halt(400, "Erro ao cadastrar professor!".to_json)
@@ -109,7 +109,25 @@ namespace "/api/v1" do
     end
 
     delete "/:id" do 
-      
+      @repository_theme.delete(params[:id])
+      halt(204)
+    rescue Mongoid::Errors::DocumentNotFound
+      halt(404, {message: "Tema não encontrado!"}.to_json)
+    end
+
+    patch "/:id" do 
+      new_attributes = params.except("id")
+
+      if new_attributes.empty? 
+        halt(400, {message: "Parâmetros inválidos"}.to_json)
+      end
+     
+      theme = @repository_theme.update(params[:id],new_attributes)
+      serializer_theme(theme)
+    rescue Mongoid::Errors::DocumentNotFound
+      halt(404,{message: "Tema não encontrado!"}.to_json)
+    rescue Mongoid::Errors::UnknownAttribute
+      halt(500, {message: "Parâmetros inválidos"}.to_json)
     end
   end
 end

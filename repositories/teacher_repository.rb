@@ -17,7 +17,7 @@ class TeacherRepository
     @teacher_instance.find(id)
   end
 
-  def create_teacher(attributes)
+  def create(attributes)
     if validate_teacher?(attributes["name"])
       teacher =  @teacher_instance.new(attributes)
       teacher.save!
@@ -26,11 +26,11 @@ class TeacherRepository
     raise Mongoid::Errors::MongoidError
   end
 
-  def delete_teacher(id)
+  def delete(id)
     find_by_id(id).delete
   end
 
-  def update_teacher(id,attributes)
+  def update(id,attributes)
     teacher = find_by_id(id)
     attributes.each do |key,value| 
       teacher.set("#{key}" => value)

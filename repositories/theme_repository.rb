@@ -17,4 +17,14 @@ class ThemeRepository
     theme = teacher.themes.create!(attributes)
     return theme
   end
+
+  def delete(id)
+    find_by_id(id).delete
+  end
+
+  def update(id,attributes)
+    theme = find_by_id(id)
+    theme.update_attributes!(attributes)
+    theme
+  end
 end
