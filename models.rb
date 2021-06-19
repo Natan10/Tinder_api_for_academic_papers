@@ -7,10 +7,12 @@ class Theme
   field :data, type: Time, default: -> {Time.now}
   field :tags, type: Array
 
-  validates :title, presence: true
+  validates :title, presence: true ,uniqueness: true
   validates :description, presence: true
 
+
   belongs_to :teacher
+  index({ title: "text" }, { unique: true, name: "title_index" })
 end
 
 class Teacher 
