@@ -1,10 +1,12 @@
 require "sinatra/namespace"
+require "sinatra/json"
 require "./models"
 require "./serializers/teacher_serializer"
 require "./serializers/theme_serializer"
 require "./repositories/teacher_repository"
 require "./repositories/theme_repository"
 
+require "./graphql/schema"
 
 
 namespace "/api/v1" do 
@@ -33,6 +35,23 @@ namespace "/api/v1" do
   end
   
   namespace "/teachers" do 
+
+    post "/gqlTeachers" do 
+      result = TeacherSchema.execute(params[:query]).to_json
+     
+      halt(200,result)
+    end
+
+    post "/gqlTeacher" do 
+      
+      puts "----> #{params}"
+      result = TeacherSchema.execute(
+        params[:query],
+        variables: params[:variables]
+      ).to_json
+     
+      halt(200,result)
+    end
     
     # GET /teachers/:id
     get "/:id" do
@@ -80,6 +99,7 @@ namespace "/api/v1" do
       teacher = @repository_theacher.create(params)
       halt(201, serializer_teacher(teacher))
     rescue Exception => e 
+      puts e
       halt(400, "Erro ao cadastrar professor!".to_json)
     end
   end

@@ -7,6 +7,8 @@ gem "mongoid", "~> 7.0"
 gem "rack"
 gem "rake"
 gem "rack-contrib"
+gem "graphql", "1.9.0"
+
 
 gem 'dotenv-rails', groups: [:development, :test]
 
