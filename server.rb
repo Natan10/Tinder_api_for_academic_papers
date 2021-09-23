@@ -27,3 +27,6 @@ options "*" do
   response.headers["Allow"] = "HEAD,GET,PUT,PATCH,POST,OPTIONS,DELETE"
   response.headers["Access-Control-Allow-Headers"] = "X-Requested-With, X-HTTP-Method-Override, Content-Type, Cache-Control, Accept"
 end
+
+
+# ruby -rpry file.rb to debug

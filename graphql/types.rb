@@ -1,4 +1,4 @@
-require_relative "base_object"
+require_relative "./base/base_query"
 
 module Types
   class TeacherType < Types::BaseObject
