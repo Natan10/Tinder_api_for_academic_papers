@@ -36,21 +36,21 @@ namespace "/api/v1" do
   
   namespace "/teachers" do 
 
+    # GraphQl queries
     post "/gqlTeachers" do 
       result = TeacherSchema.execute(params[:query]).to_json
-     
       halt(200,result)
     end
 
     post "/gqlTeacher" do 
-      
-      puts "----> #{params}"
       result = TeacherSchema.execute(
         params[:query],
         variables: params[:variables]
       ).to_json
      
       halt(200,result)
+    rescue Mongoid::Errors::DocumentNotFound
+      halt(404)
     end
     
     # GET /teachers/:id
