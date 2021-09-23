@@ -38,16 +38,7 @@ namespace "/api/v1" do
 
     # GraphQl queries
     post "/gqlTeachers" do 
-      result = TeacherSchema.execute(params[:query]).to_json
-      halt(200,result)
-    end
-
-    post "/gqlTeacher" do 
-      result = TeacherSchema.execute(
-        params[:query],
-        variables: params[:variables]
-      ).to_json
-     
+      result = TeacherSchema.execute(params[:query],variables: params[:variables]).to_json
       halt(200,result)
     rescue Mongoid::Errors::DocumentNotFound
       halt(404)
@@ -99,7 +90,6 @@ namespace "/api/v1" do
       teacher = @repository_theacher.create(params)
       halt(201, serializer_teacher(teacher))
     rescue Exception => e 
-      puts e
       halt(400, "Erro ao cadastrar professor!".to_json)
     end
   end
