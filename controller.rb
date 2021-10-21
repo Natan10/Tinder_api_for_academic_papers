@@ -1,11 +1,9 @@
 require "sinatra/namespace"
 require "sinatra/json"
 require "./models"
-require "./serializers/teacher_serializer"
-require "./serializers/theme_serializer"
 require "./repositories/teacher_repository"
 require "./repositories/theme_repository"
-
+require "./helpers/serializer_helper"
 require "./graphql/schema"
 
 
@@ -18,22 +16,7 @@ namespace "/api/v1" do
     @repository_theacher = TeacherRepository.new(Teacher)
     @repository_theme = ThemeRepository.new(Theme,@repository_theacher)
   end
-
-  helpers do
-    def serializer_teacher(teacher, options={}) 
-      TeacherSerializer.new(teacher).to_json
-    end
-
-    def serializer_theme(theme,options={})
-      ThemeSerializer.new(theme).to_json
-    end
-
-    # Deprecado
-    def json_body(request)
-      JSON.parse(request.body.read) 
-    end
-  end
-  
+ 
   namespace "/teachers" do 
 
     # GraphQl queries

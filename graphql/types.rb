@@ -9,5 +9,6 @@ module Types
     field :name, String,null: false
     field :email, String,null: false
     field :latex_url, String,null: true
+
   end
 end
