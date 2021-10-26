@@ -1,5 +1,7 @@
 test:
   clients:
     default: 
-      uri: <%= ENV["MONGO_URI_TEST"] %>
+      database: tcc_tinder_test
+      hosts: 
+        - <%= ENV["MONGO_URI_LOCAL"] %>
       
