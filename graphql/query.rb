@@ -6,6 +6,8 @@ class QueryType < GraphQL::Schema::Object
   field :teacher,Types::TeacherType, null: false do
     argument :id, String, required: true
   end
+
+  field :themes, [Types::ThemeType], null: false
     
   def teachers
     Teacher.all
@@ -13,5 +15,9 @@ class QueryType < GraphQL::Schema::Object
 
   def teacher(id:)
     Teacher.find(id)
+  end
+
+  def themes
+    Theme.all
   end
 end
